@@ -1,0 +1,4 @@
+requests~=2.25.1
+pathos~=0.2.7
+tqdm~=4.60.0
+func-timeout~=4.3.5

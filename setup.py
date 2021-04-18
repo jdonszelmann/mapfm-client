@@ -4,8 +4,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="mapf_client",
-    version="0.0.1",
+    name="mmapf_client",
+    version="0.0.2",
     author="Jonathan D�nszelmann",
     author_email="jonabent@gmail.com",
     description="client library for interaction with mapf.nl",
@@ -16,8 +16,8 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/jonay2000/mapf_client/issues",
     },
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python 3",
+        "License :: MIT License",
         "Operating System :: OS Independent",
     ],
     package_dir={"": "src"},
