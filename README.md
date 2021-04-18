@@ -47,7 +47,7 @@ You should implement the "solver" function yourself.
 This function should take in a problem and return the solution.
 A basic outline of this function can be as follows:
 ```python
-from mapf_client import Problem, Solution, MarkedLocation
+from mmapf_client import Problem, Solution, MarkedLocation
 
 
 class Maze:
