@@ -8,9 +8,9 @@ from .status import Status
 
 class MarkedLocation:
     def __init__(self, color: int, x: int, y: int):
-        self.color = color
-        self.x = x
-        self.y = y
+        self.color: int = color
+        self.x: int = x
+        self.y: int = y
 
 
 class Problem:
@@ -43,11 +43,11 @@ class Problem:
         """
 
         # USEFUL FOR PROBLEM SOLVING
-        self.grid = grid
-        self.width = width
-        self.height = height
-        self.starts = starts
-        self.goals = goals
+        self.grid: List[List[int]] = grid
+        self.width: int = width
+        self.height: int = height
+        self.starts: List[MarkedLocation] = starts
+        self.goals: List[MarkedLocation] = goals
 
         # NOT NEEDED FOR THE PROBLEM SOLVING
         # FOR THE BENCHMARK ONLY

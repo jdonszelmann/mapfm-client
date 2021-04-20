@@ -1,6 +1,6 @@
 import warnings
 from pathos.multiprocessing import ProcessPool as Pool
-from typing import Union, Callable, List, Iterable
+from typing import Union, Callable, List, Iterable, Optional
 
 from tqdm import tqdm
 
@@ -21,7 +21,7 @@ class MapfBenchmarker:
                  algorithm: str,
                  version: str,
                  debug: bool = True,
-                 solver: Callable[[Problem], List] = None,
+                 solver: Optional[Callable[[Problem], Union[List, Solution]]] = None,
                  cores: int = 1,
                  timeout: Union[int, None] = 10,
                  baseURL: str = "https://mapf.nl/"
@@ -59,7 +59,7 @@ class MapfBenchmarker:
 
         self.problem_id: Union[str, None] = None
 
-    def run(self, solver: Callable[[Problem], Solution] = None):
+    def run(self, solver: Optional[Callable[[Problem], Union[Solution, List]]] = None):
         """
         Use your solver to solve all problems
         """

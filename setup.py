@@ -3,9 +3,13 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setuptools.setup(
     name="mapfmclient",
-    version="0.0.5",
+    version="0.0.6",
     author="Jonathan D�nszelmann",
     author_email="jonabent@gmail.com",
     description="client library for interaction with mapf.nl",
@@ -20,6 +24,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    install_requires=required,
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
