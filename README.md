@@ -93,7 +93,7 @@ MapfwBenchmarker("<YOUR API TOKEN>", ["3ab4d","4ab4d","5ab4d"], "TestAlgotithm",
 If you want a list of all the indexes of the benchmarks, that is possible with the ```get_all_benchmarks``` function.
 As an argument you can add the index, or a list of indexes of benchmarks that you dont want to run
 ```python
-from mapf_client import get_all_benchmarks
+from mmapf_client import get_all_benchmarks
 all_benchmarks = get_all_benchmarks()
 without_benchmark_3 = get_all_benchmarks(without="3ab4d")
 without_benchmark_2_and_4 = get_all_benchmarks(without=["3ab4d","4ab4d","5ab4d"])

@@ -57,7 +57,7 @@ class Problem:
         self.start_time = time()
         self.time = 0
 
-        self.solution = Solution()
+        self.solution = []
         self.status = {"state": Status.Uninitialized, "data": None}
 
     def __str__(self):
@@ -71,7 +71,7 @@ class Problem:
         out += "\n>"
         return out
 
-    def set_solution(self, solution: Solution, runtime=None):
+    def set_solution(self, solution: List[Solution], runtime=None):
         """
         Add a solution to the problem
 
@@ -90,6 +90,7 @@ class Problem:
             self.time = time() - self.start_time
         self.benchmark.status["data"]["problem_states"][self.batch_pos] = 1
 
+        # when all benchmarks are done, submit the result
         if all(self.benchmark.status["data"]["problem_states"]):
             self.status = {"state": Status.Submitting, "data": None}
             self.benchmark.submit()

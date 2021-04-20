@@ -101,7 +101,7 @@ class MapfwBenchmarker:
 
                 for p in range(len(self.problems)):
                     s = solutions[p]
-                    self.problems[p].set_solution(s if isinstance(s, Solution) else Solution.from_paths(s))
+                    self.problems[p].set_solution([i if isinstance(i, Solution) else Solution.from_paths(i) for i in s])
 
     def submit(self):
         """"
@@ -131,7 +131,7 @@ class MapfwBenchmarker:
         res = r.json()
 
         if res == "OK":
-            self.status = {"state": "SUBMITTED", "data": None}
+            self.status = {"state": Status.Submitted, "data": None}
         else:
             self.problems = [Problem.from_json(part, self, pos) for pos, part in enumerate(r.json()["problems"])]
             self.attempt_id = r.json()["attempt"]
@@ -148,7 +148,7 @@ class MapfwBenchmarker:
                 else:
                     self.timeout = 0
 
-            self.status = {"state": "RUNNING", "data": {"problem_states": [0 for _ in self.problems]}}
+            self.status = {"state": Status.Running, "data": {"problem_states": [0 for _ in self.problems]}}
 
     def load(self):
         """
@@ -169,7 +169,7 @@ class MapfwBenchmarker:
             "debug": self.debug
         }
 
-        r = requests.post(f"{self.baseURL}api/benchmarks/{self.problem_id}/problems", headers=headers,
+        r = requests.post(f"{self.baseURL}/benchmarks/{self.problem_id}/problems", headers=headers,
                           json=data)
 
         assert r.status_code == 200, print(r.content)
@@ -177,26 +177,27 @@ class MapfwBenchmarker:
         self.problems = [Problem.from_json(part, self, pos) for pos, part in enumerate(r.json()["problems"])]
         self.attempt_id = r.json()["attempt"]
 
-        if "timeout" in r.json():
-            timeout = r.json()["timeout"]
-            if self.user_timeout:
-                if self.user_timeout < timeout:
-                    warnings.warn(f"The benchmark recommended timeout is {timeout}ms,"
-                                  f" your timeout is {self.user_timeout}ms."
-                                  f" Consider increasing or removing your custom timeout.")
-                if self.user_timeout > timeout:
-                    warnings.warn(f"The benchmark recommended timeout is {timeout}ms,"
-                                  f" your timeout is {self.user_timeout}ms."
-                                  f" Your timeout will be overwritten by the benchmark recommended timeout.")
-                self.timeout = min(self.user_timeout, timeout)
-            else:
-                self.timeout = timeout
-
-        else:
-            if self.user_timeout:
-                self.timeout = self.user_timeout
-            else:
-                self.timeout = 0
+        # TODO:
+        # if "timeout" in r.json():
+        #     timeout = r.json()["timeout"]
+        #     if self.user_timeout:
+        #         if self.user_timeout < timeout:
+        #             warnings.warn(f"The benchmark recommended timeout is {timeout}ms,"
+        #                           f" your timeout is {self.user_timeout}ms."
+        #                           f" Consider increasing or removing your custom timeout.")
+        #         if self.user_timeout > timeout:
+        #             warnings.warn(f"The benchmark recommended timeout is {timeout}ms,"
+        #                           f" your timeout is {self.user_timeout}ms."
+        #                           f" Your timeout will be overwritten by the benchmark recommended timeout.")
+        #         self.timeout = min(self.user_timeout, timeout)
+        #     else:
+        #         self.timeout = timeout
+        #
+        # else:
+        #     if self.user_timeout:
+        #         self.timeout = self.user_timeout
+        #     else:
+        #         self.timeout = 0
 
         self.status = {"state": Status.Running, "data": {"problem_states": [0 for _ in self.problems]}}
 
