@@ -1,4 +1,3 @@
-import warnings
 from pathos.multiprocessing import ProcessPool as Pool
 from typing import Union, Callable, List, Iterable, Optional
 
