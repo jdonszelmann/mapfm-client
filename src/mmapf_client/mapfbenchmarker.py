@@ -14,7 +14,7 @@ import requests
 from func_timeout import func_timeout, FunctionTimedOut
 
 
-class MapfwBenchmarker:
+class MapfBenchmarker:
     def __init__(self,
                  token: str,
                  problem_id: Union[str, Iterable[str]],
