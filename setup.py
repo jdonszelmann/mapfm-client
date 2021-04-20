@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="mapfmclient",
-    version="0.0.4",
+    version="0.0.5",
     author="Jonathan D�nszelmann",
     author_email="jonabent@gmail.com",
     description="client library for interaction with mapf.nl",
