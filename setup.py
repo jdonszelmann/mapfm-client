@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="mapfm_client",
+    name="mapfmclient",
     version="0.0.4",
     author="Jonathan D�nszelmann",
     author_email="jonabent@gmail.com",

@@ -1,9 +1,9 @@
-# MMAPF Client
+# MAPFM Client
 
 This is a client library for the https://mapf.nl/ MMAPF problems
-## The MMAPF problem
-MAPFW is an abbreviation of  "Matching in multi-agent pathfinding".
-With MAPFW problems, you are given:
+## The MAPFM problem
+MAPFM is an abbreviation of  "Matching in multi-agent pathfinding".
+With MAPFM problems, you are given:
 -	A grid/maze
 -	A list of agent starting positions (each agent has a color)
 -	A list of agent goal positions (each goal has a color)
@@ -18,7 +18,7 @@ This solution is optimal if there is no other solution st. the sum of the length
 ## Using the client library
 Install the library with:
 ```bash
-pip install mapfm_client
+pip install mapfmclient
 ```
 Then go to https://mapf.nl/benchmarks/. Here you can find a list of benchmarks. If you click on a benchmark you can see prefiously posted solutions. By clicking on a solution, You can see what the problem looks like. Find a problem that you like, and find its index on the https://mapfw.nl/benchmarks/ page (Sorry, you will have to count yourself, starting from 1. This will change later).
 
@@ -26,7 +26,7 @@ Now go to your account page at https://mapfw.nl/auth/account. To find your API T
 
 This is all the info you need to start coding. The basic outline of your code should look like this:
 ```python
-from mapfm_client import MapfwBenchmarker
+from mapfmclient import MapfwBenchmarker
 if __name__ == '__main__':
     benchmarker = MapfwBenchmarker("<YOUR API TOKEN>", <BENCHMARK ID(s)>, "<YOUR ALGORITHMS NAME>",
                                    "<YOUR ALGORITHMS VERSION>", <DEBUG_MODE>, solver=<SOLVER>,cores=<CORES>)
@@ -47,7 +47,7 @@ You should implement the "solver" function yourself.
 This function should take in a problem and return the solution.
 A basic outline of this function can be as follows:
 ```python
-from mapfm_client import Problem, Solution, MarkedLocation
+from mapfmclient import Problem, Solution, MarkedLocation
 
 
 class Maze:
@@ -93,7 +93,7 @@ MapfBenchmarker("<YOUR API TOKEN>", ["3ab4d","4ab4d","5ab4d"], "TestAlgotithm",
 If you want a list of all the indexes of the benchmarks, that is possible with the ```get_all_benchmarks``` function.
 As an argument you can add the index, or a list of indexes of benchmarks that you dont want to run
 ```python
-from mapfm_client import get_all_benchmarks
+from mapfmclient import get_all_benchmarks
 all_benchmarks = get_all_benchmarks()
 without_benchmark_3 = get_all_benchmarks(without="3ab4d")
 without_benchmark_2_and_4 = get_all_benchmarks(without=["3ab4d","4ab4d","5ab4d"])
