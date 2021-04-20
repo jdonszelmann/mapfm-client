@@ -1,4 +1,3 @@
-import warnings
 from pathos.multiprocessing import ProcessPool as Pool
 from typing import Union, Callable, List, Iterable, Optional
 
@@ -99,9 +98,8 @@ class MapfBenchmarker:
                     with Pool(self.cores) as p:
                         solutions = list(tqdm(p.imap(time_func, self.problems), total=len(self.problems)))
 
-                for p in range(len(self.problems)):
-                    s = solutions[p]
-                    self.problems[p].set_solution([i if isinstance(i, Solution) else Solution.from_paths(i) for i in s])
+                for (p, (s, t)) in zip(self.problems, solutions):
+                    p.set_solution(s if isinstance(s, Solution) else Solution.from_paths(s), runtime=t)
 
     def submit(self):
         """"
@@ -114,17 +112,15 @@ class MapfBenchmarker:
             'X-API-Token': self.token
         }
 
-        data = {
-            "solutions": [
-                {
-                    "problem": problem.id,
-                    "time": round(problem.time * 1000),
-                    "solution": problem.solution
-                } for problem in self.problems
-            ]
-        }
+        data = [
+            {
+                "benchmark": problem.identifier,
+                "time": round(problem.time * 1000),
+                "solution": problem.solution.serialize()
+            } for problem in self.problems
+        ]
 
-        r = requests.post(f"{self.baseURL}api/attempts/{self.attempt_id}/solutions", headers=headers, json=data)
+        r = requests.post(f"{self.baseURL}/api/solutions/{self.attempt_id}", headers=headers, json=data)
 
         assert r.status_code == 200, print(r.content)
 
@@ -169,13 +165,14 @@ class MapfBenchmarker:
             "debug": self.debug
         }
 
-        r = requests.post(f"{self.baseURL}/benchmarks/{self.problem_id}/problems", headers=headers,
+        r = requests.post(f"{self.baseURL}/api/benchmark/{self.problem_id}", headers=headers,
                           json=data)
 
         assert r.status_code == 200, print(r.content)
 
-        self.problems = [Problem.from_json(part, self, pos) for pos, part in enumerate(r.json()["problems"])]
-        self.attempt_id = r.json()["attempt"]
+        j = r.json()
+        self.problems = [Problem.from_json(part, self, pos) for pos, part in enumerate(j["problems"])]
+        self.attempt_id = j["attempt_id"]
 
         # TODO:
         # if "timeout" in r.json():

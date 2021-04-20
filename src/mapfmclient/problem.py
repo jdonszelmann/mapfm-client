@@ -12,6 +12,10 @@ class MarkedLocation:
         self.x: int = x
         self.y: int = y
 
+    @classmethod
+    def from_dict(cls, dct) -> "MarkedLocation":
+        return cls(dct["color"], dct["x"], dct["y"])
+
 
 class Problem:
     def __init__(self,
@@ -57,7 +61,7 @@ class Problem:
         self.start_time = time()
         self.time = 0
 
-        self.solution = []
+        self.solution: Solution = Solution()
         self.status = {"state": Status.Uninitialized, "data": None}
 
     def __str__(self):
@@ -71,7 +75,7 @@ class Problem:
         out += "\n>"
         return out
 
-    def set_solution(self, solution: List[Solution], runtime=None):
+    def set_solution(self, solution: Solution, runtime=None):
         """
         Add a solution to the problem
 
@@ -104,6 +108,5 @@ class Problem:
         :param batch_pos: position in benchmark
         :return:
         """
-        problem_part = json.loads(data["problem"])
-        return Problem(problem_part["grid"], problem_part["width"], problem_part["height"], problem_part["starts"],
-                       problem_part["goals"], benchmark, data["id"], batch_pos)
+        return Problem(data["grid"], data["width"], data["height"], [MarkedLocation.from_dict(i) for i in data["starts"]],
+                       [MarkedLocation.from_dict(i) for i in data["goals"]], benchmark, data["uuid"], batch_pos)

@@ -1,3 +1,4 @@
+import json
 from typing import Union, List, Tuple
 
 
@@ -10,6 +11,13 @@ class Path:
         res = cls()
         res.route = route
         return res
+
+    def serialize(self) -> dict:
+        return {
+            "route": [
+                {"x": i[0], "y": i[1]} for i in self.route
+            ]
+        }
 
 
 class Solution:
@@ -25,5 +33,9 @@ class Solution:
     def add_path(self, path: Path, for_agent_index: Union[int, None] = None):
         self.paths.append(path)
 
-    def serialize(self) -> str:
-        pass
+    def serialize(self) -> dict:
+        return {
+            "paths": [
+                i.serialize() for i in self.paths
+            ]
+        }
