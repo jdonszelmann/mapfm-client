@@ -25,7 +25,7 @@ class Problem:
                  starts: List[MarkedLocation],
                  goals: List[MarkedLocation],
                  benchmark,
-                 identifier: str,
+                 identifier: int,
                  batch_pos: int
                  ):
         """
@@ -109,4 +109,4 @@ class Problem:
         :return:
         """
         return Problem(data["grid"], data["width"], data["height"], [MarkedLocation.from_dict(i) for i in data["starts"]],
-                       [MarkedLocation.from_dict(i) for i in data["goals"]], benchmark, data["uuid"], batch_pos)
+                       [MarkedLocation.from_dict(i) for i in data["goals"]], benchmark, data["id"], batch_pos)

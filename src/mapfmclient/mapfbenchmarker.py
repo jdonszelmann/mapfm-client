@@ -16,7 +16,7 @@ from func_timeout import func_timeout, FunctionTimedOut
 class MapfBenchmarker:
     def __init__(self,
                  token: str,
-                 problem_id: Union[str, Iterable[str]],
+                 problem_id: Union[int, Iterable[int]],
                  algorithm: str,
                  version: str,
                  debug: bool = True,
@@ -45,7 +45,7 @@ class MapfBenchmarker:
         self.solver = solver
         self.algorithm = algorithm
         self.version = version
-        self.benchmarks = [problem_id] if isinstance(problem_id, str) else problem_id
+        self.benchmarks = [problem_id] if isinstance(problem_id, int) else problem_id
         self.problems = None
         self.status = {"state": Status.Uninitialized, "data": None}
         self.attempt_id = None
@@ -56,7 +56,7 @@ class MapfBenchmarker:
 
         self.baseURL = baseURL
 
-        self.problem_id: Union[str, None] = None
+        self.problem_id: Union[int, None] = None
 
     def run(self, solver: Optional[Callable[[Problem], Union[Solution, List]]] = None):
         """
@@ -115,7 +115,7 @@ class MapfBenchmarker:
         data = [
             {
                 "benchmark": problem.identifier,
-                "time": round(problem.time * 1000),
+                "time": round(problem.time * 1000 * 1000 * 1000),
                 "solution": problem.solution.serialize()
             } for problem in self.problems
         ]
@@ -199,7 +199,7 @@ class MapfBenchmarker:
         self.status = {"state": Status.Running, "data": {"problem_states": [0 for _ in self.problems]}}
 
 
-def get_all_benchmarks(without: Union[str, Iterable[str], None] = None, baseURL: str = "https://mapf.nl/"):
+def get_all_benchmarks(without: Union[int, Iterable[int], None] = None, baseURL: str = "https://mapf.nl/"):
     """
     Get all benchmarks
 

@@ -80,13 +80,13 @@ Valid uses are:
 
 Run benchmark 3, with solver ```solve```, with algorithm TestAlgorithm and version TestVersion, in debug on 1 core:
 ```python
-MapfBenchmarker("<YOUR API TOKEN>", "3ab4d", "TestAlgotithm",
+MapfBenchmarker("<YOUR API TOKEN>", 1, "TestAlgotithm",
                     "TestVersion", True, solver=solve,cores=1)
 ```
 
 Run benchmark 1,2 and 3, with solver ```solve```, with algorithm TestAlgorithm and version TestVersion, in debug on 3 cores:
 ```python
-MapfBenchmarker("<YOUR API TOKEN>", ["3ab4d","4ab4d","5ab4d"], "TestAlgotithm",
+MapfBenchmarker("<YOUR API TOKEN>", [1, 2, 3], "TestAlgotithm",
                     "TestVersion", True, solver=solve,cores=3)
 ```
 
@@ -96,7 +96,7 @@ As an argument you can add the index, or a list of indexes of benchmarks that yo
 from mapfmclient import get_all_benchmarks
 all_benchmarks = get_all_benchmarks()
 without_benchmark_3 = get_all_benchmarks(without="3ab4d")
-without_benchmark_2_and_4 = get_all_benchmarks(without=["3ab4d","4ab4d","5ab4d"])
+without_benchmark_2_and_4 = get_all_benchmarks(without=[1, 3, 4])
 ```
 
 When your are ready, set the debug mode to False. The next time you run your code, your attempt will be publicly listed.
