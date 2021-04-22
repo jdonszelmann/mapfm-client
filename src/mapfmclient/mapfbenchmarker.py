@@ -54,7 +54,7 @@ class MapfBenchmarker:
         self.cores = cores
         self.user_timeout = timeout
 
-        self.baseURL = baseURL
+        self.baseURL = baseURL.rstrip('/')
 
         self.problem_id: Union[int, None] = None
 
