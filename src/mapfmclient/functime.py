@@ -1,8 +1,8 @@
-from time import time
+from time import perf_counter
 
 
 def time_fun(problem, funct):
-    s = time()
+    s = perf_counter()
     solution = funct(problem)
-    e = time() - s
+    e = perf_counter() - s
     return solution, e
