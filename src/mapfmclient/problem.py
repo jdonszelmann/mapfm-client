@@ -1,5 +1,5 @@
 import json
-from time import time
+from time import perf_counter
 from typing import List
 
 from .solution import Solution
@@ -58,7 +58,7 @@ class Problem:
         self.benchmark = benchmark
         self.identifier = identifier
         self.batch_pos = batch_pos
-        self.start_time = time()
+        self.start_time = perf_counter()
         self.time = 0
 
         self.solution: Solution = Solution()
@@ -91,7 +91,7 @@ class Problem:
         if runtime:
             self.time = runtime
         else:
-            self.time = time() - self.start_time
+            self.time = perf_counter() - self.start_time
         self.benchmark.status["data"]["problem_states"][self.batch_pos] = 1
 
         # when all benchmarks are done, submit the result
