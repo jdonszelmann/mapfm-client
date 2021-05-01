@@ -9,7 +9,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="mapfmclient",
-    version="0.0.9",
+    version="0.0.10",
     author="Jonathan D�nszelmann",
     author_email="jonabent@gmail.com",
     description="client library for interaction with mapf.nl",
