@@ -207,7 +207,7 @@ class MapfBenchmarker:
                 solve_func = self.solver
 
             def time_func(current_problem):
-                return current_problem, *time_fun(current_problem, solve_func)
+                return (current_problem, *time_fun(current_problem, solve_func))
 
             if self.cores == 1:
                 solutions = list(tqdm(
