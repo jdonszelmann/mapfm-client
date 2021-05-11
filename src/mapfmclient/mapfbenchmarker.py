@@ -136,7 +136,7 @@ class MapfBenchmarker:
 
         data = self._get_benchmark_data(descriptor, attempt=False)
 
-        r = requests.post(f"{self.baseURL}/api/benchmark/{descriptor.identifier}", headers=headers, json=data)
+        r = requests.post(f"{self.baseURL}/api/benchmark/attempt/{descriptor.identifier}", headers=headers, json=data)
 
         if r.status_code != 200:
             raise InvalidResponseException(f"Received invalid response from server ({r.status_code}) ({r.json()})")
@@ -156,7 +156,7 @@ class MapfBenchmarker:
 
         data = self._get_benchmark_data(descriptor, attempt=True)
 
-        r = requests.post(f"{self.baseURL}/api/benchmark/{descriptor.identifier}", headers=headers, json=data)
+        r = requests.post(f"{self.baseURL}/api/benchmark/attempt/{descriptor.identifier}", headers=headers, json=data)
 
         if r.status_code != 200:
             raise InvalidResponseException(f"Received invalid response from server ({r.status_code}) ({r.content})")
@@ -246,10 +246,10 @@ class MapfBenchmarker:
             "progressive": descriptor.progressive,
         }
 
-        r = requests.post(f"{self.baseURL}/api/solutions/{attempt_id}", headers=headers, json=data)
+        r = requests.post(f"{self.baseURL}/api/solutions/submit/{attempt_id}", headers=headers, json=data)
 
         if r.status_code != 200:
-            raise InvalidResponseException(f"Received invalid response from server ({r.status_code}) ({r.json()})")
+            raise InvalidResponseException(f"Received invalid response from server ({r.status_code}) ({r.content})")
 
 
 def get_all_benchmarks(without: Union[int, Iterable[int], None] = None, baseURL: str = "https://mapf.nl/"):
