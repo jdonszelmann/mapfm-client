@@ -16,6 +16,13 @@ class MarkedLocation:
     def from_dict(cls, dct) -> "MarkedLocation":
         return cls(dct["color"], dct["x"], dct["y"])
 
+    def serialize(self):
+        return {
+            "color": self.color,
+            "x": self.x,
+            "y": self.y,
+        }
+
     def __repr__(self):
         return f"MarkedLocation({self.x}, {self.y}, color={self.color})"
 
