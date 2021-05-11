@@ -121,7 +121,7 @@ class MapfBenchmarker:
             "algorithm": self.algorithm,
             "version": self.version,
             "debug": self.debug,
-            "progressive": descriptor.progressive,
+            "progressive": descriptor.progressive_descriptor,
             "progressive_description":
                 descriptor.progressive_descriptor.serialize()
                 if descriptor.progressive
@@ -239,7 +239,12 @@ class MapfBenchmarker:
             "solutions": [
                {
                    "time": round(time * 1000 * 1000 * 1000),
-                   "solution": solution.serialize()
+                   "solution": solution.serialize(),
+                   "progressive_params": {
+                       "num_agents": len(problem.starts),
+                       "num_teams": descriptor.progressive_descriptor.num_teams,
+                       "max_diff": descriptor.progressive_descriptor.max_team_diff,
+                   } if descriptor.progressive else None
                } for (problem, solution, time) in solutions
             ],
             "benchmark": descriptor.identifier,

@@ -8,6 +8,7 @@ pathos = "*"
 tqdm = "*"
 requests = "*"
 func-timeout = "*"
+mapfmclient = "*"
 
 [dev-packages]
 
