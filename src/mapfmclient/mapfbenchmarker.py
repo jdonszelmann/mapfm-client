@@ -244,6 +244,8 @@ class MapfBenchmarker:
                        "num_agents": len(problem.starts),
                        "num_teams": descriptor.progressive_descriptor.num_teams,
                        "max_diff": descriptor.progressive_descriptor.max_team_diff,
+                       "starts": problem.starts,
+                       "goals": problem.goals,
                    } if descriptor.progressive else None
                } for (problem, solution, time) in solutions
             ],
