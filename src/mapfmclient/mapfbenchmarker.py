@@ -121,7 +121,7 @@ class MapfBenchmarker:
             "algorithm": self.algorithm,
             "version": self.version,
             "debug": self.debug,
-            "progressive": descriptor.progressive_descriptor,
+            "progressive": descriptor.progressive,
             "progressive_description":
                 descriptor.progressive_descriptor.serialize()
                 if descriptor.progressive
