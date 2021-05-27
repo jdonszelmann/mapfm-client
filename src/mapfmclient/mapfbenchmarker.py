@@ -1,17 +1,11 @@
-from pathos.multiprocessing import ProcessPool as Pool
 from typing import Union, Callable, List, Iterable, Optional, Tuple
-from urllib.parse import urljoin
 
-from tqdm import tqdm
-
-from .functime import time_fun
+from .test_bench import TestBench
 
 from .problem import Problem
 from .solution import Solution
-from .status import Status
 
 import requests
-from func_timeout import func_timeout, FunctionTimedOut
 
 
 class InvalidResponseException(Exception):
@@ -19,7 +13,9 @@ class InvalidResponseException(Exception):
 
 
 class ProgressiveDescriptor:
-    def __init__(self, min_agents: int, max_agents: int, num_teams: int, max_team_diff: int = 0):
+    def __init__(
+        self, min_agents: int, max_agents: int, num_teams: int, max_team_diff: int = 0
+    ):
         assert min_agents <= max_agents
 
         self.min_agents = min_agents
@@ -27,18 +23,21 @@ class ProgressiveDescriptor:
         self.num_teams = num_teams
         self.max_team_diff = max_team_diff
 
-
     def serialize(self):
         return {
             "min_agents": self.min_agents,
             "max_agents": self.max_agents,
             "num_teams": self.num_teams,
-            "max_diff": self.max_team_diff
+            "max_diff": self.max_team_diff,
         }
 
 
 class BenchmarkDescriptor:
-    def __init__(self, identifier: int, progressive_descriptor: Optional[ProgressiveDescriptor] = None):
+    def __init__(
+        self,
+        identifier: int,
+        progressive_descriptor: Optional[ProgressiveDescriptor] = None,
+    ):
         """
         :param identifier: identifies the benchmark, or  the progressive benchmark in case a progressive descriptor is
                            given.
@@ -54,17 +53,20 @@ class BenchmarkDescriptor:
 
 
 class MapfBenchmarker:
-    def __init__(self,
-                 token: str,
-                 benchmark: Union[int, Iterable[int], BenchmarkDescriptor, Iterable[BenchmarkDescriptor]],
-                 algorithm: str,
-                 version: str,
-                 debug: bool = True,
-                 solver: Optional[Callable[[Problem], Union[List, Solution]]] = None,
-                 cores: int = 1,
-                 timeout: Union[int, None] = 10,
-                 baseURL: str = "https://mapf.nl/"
-                 ):
+    def __init__(
+        self,
+        token: str,
+        benchmark: Union[
+            int, Iterable[int], BenchmarkDescriptor, Iterable[BenchmarkDescriptor]
+        ],
+        algorithm: str,
+        version: str,
+        debug: bool = True,
+        solver: Optional[Callable[[Problem], Union[List, Solution]]] = None,
+        cores: int = 1,
+        timeout: Optional[int] = 10,
+        baseURL: str = "https://mapf.nl/",
+    ):
         """
         Class to help handle API requests
 
@@ -122,54 +124,62 @@ class MapfBenchmarker:
             "version": self.version,
             "debug": self.debug,
             "progressive": descriptor.progressive,
-            "progressive_description":
-                descriptor.progressive_descriptor.serialize()
-                if descriptor.progressive
-                else None,
+            "progressive_description": descriptor.progressive_descriptor.serialize()
+            if descriptor.progressive
+            else None,
             "create_attempt": attempt,
         }
 
     def _get_benchmark(self, descriptor: BenchmarkDescriptor) -> List[Problem]:
-        headers = {
-            'X-API-Token': self.token
-        }
+        headers = {"X-API-Token": self.token}
 
         data = self._get_benchmark_data(descriptor, attempt=False)
 
-        r = requests.post(f"{self.baseURL}/api/benchmark/attempt/{descriptor.identifier}", headers=headers, json=data)
+        r = requests.post(
+            f"{self.baseURL}/api/benchmark/attempt/{descriptor.identifier}",
+            headers=headers,
+            json=data,
+        )
 
         if r.status_code != 200:
-            raise InvalidResponseException(f"Received invalid response from server ({r.status_code}) ({r.json()})")
+            raise InvalidResponseException(
+                f"Received invalid response from server ({r.status_code}) ({r.json()})"
+            )
 
         j = r.json()
-        problems = [
-            Problem.from_json(part)
-            for part in j["benchmarks"]
-        ]
+        problems = [Problem.from_json(part) for part in j["benchmarks"]]
 
         return problems
 
-    def _start_attempt(self, descriptor: BenchmarkDescriptor) -> Tuple[List[Problem], int]:
-        headers = {
-            'X-API-Token': self.token
-        }
+    def _start_attempt(
+        self, descriptor: BenchmarkDescriptor
+    ) -> Tuple[List[Problem], int]:
+        headers = {"X-API-Token": self.token}
 
         data = self._get_benchmark_data(descriptor, attempt=True)
 
-        r = requests.post(f"{self.baseURL}/api/benchmark/attempt/{descriptor.identifier}", headers=headers, json=data)
+        r = requests.post(
+            f"{self.baseURL}/api/benchmark/attempt/{descriptor.identifier}",
+            headers=headers,
+            json=data,
+        )
 
         if r.status_code != 200:
-            raise InvalidResponseException(f"Received invalid response from server ({r.status_code}) ({r.content})")
+            raise InvalidResponseException(
+                f"Received invalid response from server ({r.status_code}) ({r.content})"
+            )
 
         j = r.json()
-        problems = [
-            Problem.from_json(part)
-            for part in j["benchmarks"]
-        ]
+        problems = [Problem.from_json(part) for part in j["benchmarks"]]
 
         return problems, j["attempt_id"]
 
-    def run(self, *, solver: Optional[Callable[[Problem], Union[List, Solution]]] = None, make_attempt: bool = True):
+    def run(
+        self,
+        *,
+        solver: Optional[Callable[[Problem], Union[List, Solution]]] = None,
+        make_attempt: bool = True,
+    ):
         """
         Use your solver to solve all problems
         :param solver: alternative solver (or None)
@@ -178,9 +188,10 @@ class MapfBenchmarker:
 
         if solver is None:
             solver = self.solver
-        assert solver is not None, \
-            "No solver given.\n Consult the README for information about running timed benchmarks."
-
+        assert (
+            solver is not None
+        ), "No solver given.\n Consult the README for information about running timed benchmarks."
+        test_bench = TestBench(self.cores, self.timeout)
         for descriptor in self.benchmarks:
             try:
                 if make_attempt:
@@ -190,76 +201,54 @@ class MapfBenchmarker:
             except InvalidResponseException as e:
                 print(f"invalid response on for: {descriptor} ({e})")
                 continue
-
-
-            if self.timeout:
-                def solve_func(current_problem: Problem) -> Optional[Solution]:
-                    try:
-                        sol = func_timeout(self.timeout / 1000, self.solver, args=(current_problem,))
-
-                    except FunctionTimedOut:
-                        sol = None
-                    except Exception as e:
-                        print(f"An error occurred while running: {e}")
-                        return None
-                    return sol
-            else:
-                solve_func = self.solver
-
-            def time_func(current_problem):
-                return (current_problem, *time_fun(current_problem, solve_func))
-
-            if self.cores == 1:
-                solutions = list(tqdm(
-                    map(time_func, problem_list),
-                    total=len(problem_list)
-                ))
-            elif self.cores == -1:
-                with Pool() as p:
-                    solutions = list(tqdm(
-                        p.imap(time_func, problem_list),
-                        total=len(problem_list)
-                    ))
-            else:
-                with Pool(self.cores) as p:
-                    solutions = list(tqdm(
-                        p.imap(time_func, problem_list),
-                        total=len(problem_list)
-                    ))
-
+            solutions = test_bench.run(self.solver, problem_list)
             if make_attempt:
                 self._submit_solution(descriptor, solutions, attempt_id)
 
-    def _submit_solution(self, descriptor: BenchmarkDescriptor, solutions: List[Tuple[Problem, Solution, float]], attempt_id: int):
-        headers = {
-           'X-API-Token': self.token
-        }
+    def _submit_solution(
+        self,
+        descriptor: BenchmarkDescriptor,
+        solutions: List[Tuple[Problem, Solution, float]],
+        attempt_id: int,
+    ):
+        headers = {"X-API-Token": self.token}
 
         data = {
             "solutions": [
-               {
-                   "time": round(time * 1000 * 1000 * 1000),
-                   "solution": solution.serialize(),
-                   "progressive_params": {
-                       "num_agents": len(problem.starts),
-                       "num_teams": descriptor.progressive_descriptor.num_teams,
-                       "max_diff": descriptor.progressive_descriptor.max_team_diff,
-                       "starts": [i.serialize() for i in problem.starts],
-                       "goals": [i.serialize() for i in problem.goals],
-                   } if descriptor.progressive else None
-               } for (problem, solution, time) in solutions
+                {
+                    "time": round(time * 1000 * 1000 * 1000),
+                    "solution": solution.serialize(),
+                    "progressive_params": {
+                        "num_agents": len(problem.starts),
+                        "num_teams": descriptor.progressive_descriptor.num_teams,
+                        "max_diff": descriptor.progressive_descriptor.max_team_diff,
+                        "starts": [i.serialize() for i in problem.starts],
+                        "goals": [i.serialize() for i in problem.goals],
+                    }
+                    if descriptor.progressive
+                    else None,
+                }
+                for (problem, solution, time) in solutions
             ],
             "benchmark": descriptor.identifier,
             "progressive": descriptor.progressive,
         }
 
-        r = requests.post(f"{self.baseURL}/api/solutions/submit/{attempt_id}", headers=headers, json=data)
+        r = requests.post(
+            f"{self.baseURL}/api/solutions/submit/{attempt_id}",
+            headers=headers,
+            json=data,
+        )
 
         if r.status_code != 200:
-            raise InvalidResponseException(f"Received invalid response from server ({r.status_code}) ({r.content})")
+            raise InvalidResponseException(
+                f"Received invalid response from server ({r.status_code}) ({r.content})"
+            )
 
 
-def get_all_benchmarks(without: Union[int, Iterable[int], None] = None, baseURL: str = "https://mapf.nl/"):
+def get_all_benchmarks(
+    without: Union[int, Iterable[int], None] = None, baseURL: str = "https://mapf.nl/"
+):
     """
     Get all benchmarks
 
