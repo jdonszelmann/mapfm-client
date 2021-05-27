@@ -62,7 +62,7 @@ class MapfBenchmarker:
                  debug: bool = True,
                  solver: Optional[Callable[[Problem], Union[List, Solution]]] = None,
                  cores: int = 1,
-                 timeout: Union[int, None] = 10,
+                 timeout: Union[int, None] = None,
                  baseURL: str = "https://mapf.nl/"
                  ):
         """
@@ -109,7 +109,7 @@ class MapfBenchmarker:
             )
 
         self.problems = None
-        self.timeout = None
+        self.timeout = timeout
         self.debug = debug
         self.cores = cores
         self.user_timeout = timeout
