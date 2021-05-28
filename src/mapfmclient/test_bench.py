@@ -1,10 +1,9 @@
 from pathos.multiprocessing import ProcessPool as Pool
-from typing import List, TypeVar, Callable, Optional, Any, Tuple, Union
+from typing import List, TypeVar, Callable, Optional, Tuple
 
 from tqdm import tqdm
 
-from src.mapfmclient import Problem
-from src.mapfmclient.timing import TimeoutSolver, TimingFunction
+from .timing import TimeoutSolver, TimingFunction
 
 
 class TestBench:
@@ -22,10 +21,11 @@ class TestBench:
         self.timeout = timeout
 
     a = TypeVar("a")
+    b = TypeVar("b")
 
     def run(
-        self, solver: Callable[[Problem], a], problem_list: List[Problem]
-    ) -> List[Optional[Tuple[a, float]]]:
+        self, solver: Callable[[a], b], problem_list: List[a]
+    ) -> List[Optional[Tuple[b, float]]]:
         if self.timeout:
             solve_func = TimeoutSolver(solver, self.timeout)
         else:

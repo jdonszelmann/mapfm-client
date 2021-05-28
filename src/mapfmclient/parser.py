@@ -1,7 +1,7 @@
 import os
 from typing import List
 
-from src.mapfmclient import Problem, MarkedLocation
+from .problem import Problem, MarkedLocation
 
 # A parser for a simple map format written by Ivar de Bruin.
 # A 4x3 map with a single agent assigned to team 0 would look as follows:

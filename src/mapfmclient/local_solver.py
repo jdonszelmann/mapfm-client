@@ -1,8 +1,8 @@
-from typing import TypeVar, List, Callable, Optional, Any, Tuple
+from typing import TypeVar, List, Callable, Optional, Tuple
 
-from src.mapfmclient import Problem
-from src.mapfmclient.parser import MapParser
-from src.mapfmclient.test_bench import TestBench
+from .problem import Problem
+from .parser import MapParser
+from .test_bench import TestBench
 
 
 class LocalSolver:
