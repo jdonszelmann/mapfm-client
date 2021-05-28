@@ -25,7 +25,7 @@ class TestBench:
 
     def run(
         self, solver: Callable[[a], b], problem_list: List[a]
-    ) -> List[Optional[Tuple[b, float]]]:
+    ) -> List[Tuple[a, Optional[b], float]]:
         if self.timeout:
             solve_func = TimeoutSolver(solver, self.timeout)
         else:

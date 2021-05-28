@@ -26,6 +26,6 @@ class LocalSolver:
 
     def solve(
         self, solver: Callable[[Problem], a], folder_path: str
-    ) -> List[Optional[Tuple[a, float]]]:
+    ) -> List[Tuple[Problem, Optional[a], float]]:
         problems = self.parser.parse_batch(folder_path)
         return self.test_bench.run(solver, problems)

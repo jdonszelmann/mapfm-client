@@ -47,5 +47,6 @@ class TimingFunction:
     def __init__(self, solve_func: Callable[[e], f]):
         self.solve_func = solve_func
 
-    def __call__(self, current_problem: e) -> Tuple[f, float]:
-        return current_problem, *time_fun(current_problem, self.solve_func)
+    def __call__(self, current_problem: e) -> Tuple[e, f, float]:
+        result, time = time_fun(current_problem, self.solve_func)
+        return current_problem, result, time
