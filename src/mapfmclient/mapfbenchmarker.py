@@ -53,6 +53,7 @@ class BenchmarkDescriptor:
 
 
 class MapfBenchmarker:
+<<<<<<< HEAD
     def __init__(
         self,
         token: str,
@@ -64,7 +65,7 @@ class MapfBenchmarker:
         debug: bool = True,
         solver: Optional[Callable[[Problem], Union[List, Solution]]] = None,
         cores: int = 1,
-        timeout: Optional[int] = 10,
+        timeout: Optional[int] = None,
         baseURL: str = "https://mapf.nl/",
     ):
         """
@@ -111,7 +112,7 @@ class MapfBenchmarker:
             )
 
         self.problems = None
-        self.timeout = None
+        self.timeout = timeout
         self.debug = debug
         self.cores = cores
         self.user_timeout = timeout
