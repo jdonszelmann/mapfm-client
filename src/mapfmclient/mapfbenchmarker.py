@@ -53,7 +53,6 @@ class BenchmarkDescriptor:
 
 
 class MapfBenchmarker:
-<<<<<<< HEAD
     def __init__(
         self,
         token: str,
