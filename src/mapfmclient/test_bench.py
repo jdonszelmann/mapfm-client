@@ -1,5 +1,5 @@
 from pathos.multiprocessing import ProcessPool as Pool
-from typing import List, TypeVar, Callable, Optional, Any
+from typing import List, TypeVar, Callable, Optional, Any, Tuple, Union
 
 from tqdm import tqdm
 
@@ -21,9 +21,11 @@ class TestBench:
         self.cores = cores
         self.timeout = timeout
 
+    a = TypeVar("a")
+
     def run(
-        self, solver: Callable[[Problem], Any], problem_list: List[Problem]
-    ) -> Any:
+        self, solver: Callable[[Problem], a], problem_list: List[Problem]
+    ) -> List[Optional[Tuple[a, float]]]:
         if self.timeout:
             solve_func = TimeoutSolver(solver, self.timeout)
         else:
